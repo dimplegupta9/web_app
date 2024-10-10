@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garbage Collector Service</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .gc-info {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .notifications {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .notification {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+            display: flex;
+            align-items: start;
+        }
+        .notification img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        .notification-content {
+            flex-grow: 1;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .update-time {
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="gc-info">
+            <h1>Garbage Collector Information</h1>
+            <p><strong>GC Name:</strong> <span id="gcName">GC-001</span></p>
+            <p><strong>GC Number:</strong> <span id="gcNumber">555-0123</span></p>
+            <p><strong>Current Location:</strong> <span id="gcLocation">123 Main St, City</span></p>
+            <p class="update-time">Last updated: <span id="lastUpdate">Never</span></p>
+        </div>
+
+        <div class="notifications">
+            <h2>Service Requests</h2>
+            <div id="notificationList"></div>
+        </div>
+    </div>
+
+    <!-- Include Socket.IO -->
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        const socket = io(); // Connect to the SocketIO server
+
+        // Listen for 'new_alert' events from the server
+        socket.on('new_alert', function(data) {
+            const notificationList = document.getElementById('notificationList');
+
+            const notificationDiv = document.createElement('div');
+            notificationDiv.className = 'notification';
+
+            const alertContent = document.createElement('div');
+            alertContent.className = 'notification-content';
+            alertContent.innerHTML = `
+                <p><strong>Alert:</strong> ${data.RequestBy}</p>
+                <p><strong>Alert:</strong> ${data.PickUpLocation}</p>
+                <p><strong>Alert:</strong> ${data.RequestTime}</p>
+                <img src="${data.image}" alt="Profile Image">
+            `;
+
+            notificationDiv.appendChild(alertContent);
+            notificationList.appendChild(notificationDiv);
+        });
+    </script>
+</body>
+</html>
